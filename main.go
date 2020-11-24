@@ -258,10 +258,13 @@ func (c graphiteCollector) Collect(ch chan<- prometheus.Metric) {
 		if ageLimit.After(sample.Timestamp) {
 			continue
 		}
-		ch <- prometheus.MustNewConstMetric(
-			prometheus.NewDesc(sample.Name, sample.Help, []string{}, sample.Labels),
-			sample.Type,
-			sample.Value,
+		ch <- prometheus.NewMetricWithTimestamp(
+			sample.Timestamp,
+			prometheus.MustNewConstMetric(
+				prometheus.NewDesc(sample.Name, sample.Help, []string{}, sample.Labels),
+				sample.Type,
+				sample.Value,
+			),
 		)
 	}
 }
